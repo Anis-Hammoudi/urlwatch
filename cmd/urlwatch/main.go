@@ -17,8 +17,15 @@ import (
 
 func main() {
 	// 1. Initialize Structured Logging
+	logLevel := slog.LevelInfo
+	if levelStr := os.Getenv("LOG_LEVEL"); levelStr != "" {
+		var l slog.Level
+		if err := l.UnmarshalText([]byte(levelStr)); err == nil {
+			logLevel = l
+		}
+	}
 	logger := slog.New(slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{
-		Level: slog.LevelInfo,
+		Level: logLevel,
 	}))
 
 	// 2. Initialize Core Dependencies
