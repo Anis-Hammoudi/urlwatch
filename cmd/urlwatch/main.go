@@ -35,9 +35,14 @@ func main() {
 	// 3. Assemble the API Router
 	router := api.NewServer(logger, memStore, httpChecker)
 
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
+
 	// Configure the HTTP Server with best-practice timeouts
 	srv := &http.Server{
-		Addr:         ":8080",
+		Addr:         ":" + port,
 		Handler:      router,
 		ReadTimeout:  10 * time.Second,
 		WriteTimeout: 30 * time.Second,
@@ -51,7 +56,7 @@ func main() {
 
 	// Start the server in a separate goroutine so it doesn't block
 	go func() {
-		logger.Info("Starting server", slog.String("port", "8080"))
+		logger.Info("Starting server", slog.String("port", port))
 		if err := srv.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
 			logger.Error("Server failed to start", slog.Any("error", err))
 			os.Exit(1)
