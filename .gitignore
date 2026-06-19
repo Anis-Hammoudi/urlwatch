@@ -1,0 +1,15 @@
+# Binaries
+/urlwatch.exe
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+
+# IDEs
+.idea/
+.vscode/
+*.swp
+*.swo
