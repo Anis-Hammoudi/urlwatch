@@ -31,12 +31,18 @@ func LoggingMiddleware(logger *slog.Logger, next http.Handler) http.Handler {
 
 		next.ServeHTTP(rec, r)
 
-		logger.Info("HTTP Request",
+		attrs := []any{
 			slog.String("method", r.Method),
 			slog.String("path", r.URL.Path),
 			slog.Int("status", rec.status),
 			slog.Int("duration_ms", int(time.Since(start).Milliseconds())),
-		)
+		}
+
+		if batchID := rec.Header().Get("X-Batch-ID"); batchID != "" {
+			attrs = append(attrs, slog.String("batch_id", batchID))
+		}
+
+		logger.Info("HTTP Request", attrs...)
 	})
 }
 

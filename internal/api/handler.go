@@ -67,6 +67,7 @@ func (h *Handler) CreateBatch(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	w.Header().Set("X-Batch-ID", batchID)
 	writeJSON(w, http.StatusCreated, batch)
 }
 
@@ -89,6 +90,7 @@ func (h *Handler) GetBatch(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	w.Header().Set("X-Batch-ID", id)
 	writeJSON(w, http.StatusOK, batch)
 }
 
