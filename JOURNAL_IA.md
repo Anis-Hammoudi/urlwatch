@@ -1,0 +1,8 @@
+# Journal d'utilisation de l'IA (LLM)
+
+L'IA m'a servi de partenaire de "pair-programming" et de validateur architectural, selon les modalités suivantes :
+
+* **Ce que j'ai demandé / dirigé** : J'ai défini l'architecture globale en Clean Architecture (dossiers `internal/domain`, `api`, `pool`, `store`) et imposé le respect strict du contrat JSON (gestion des tags `omitempty`). J'ai guidé la création de l'algorithme concurrent étape par étape.
+* **Ce que l'IA a généré et que j'ai accepté** : L'IA m'a suggéré d'utiliser des **canaux non bufferisés** pour le worker pool afin de garantir une backpressure mécanique parfaite. J'ai validé et intégré cette idée car elle simplifie drastiquement la gestion de l'annulation via `context`. L'IA m'a également aidé à rédiger le boilerplate des tests avec `httptest`.
+* **Ce que j'ai modifié/rejeté** : J'ai dû corriger et ajuster certains tests générés initialement (notamment sur la vérification de la latence de l'API locale qui renvoyait `0ms` et faisait échouer les assertions de tests). J'ai pris soin de re-valider chaque couche avec `go test -race` pour m'assurer qu'aucune suggestion de code n'introduisait de data race.
+* **Conclusion** : L'IA a accéléré l'écriture du code "verbeux" (comme les structs de requête JSON) et m'a aidé à débattre des choix de mutex (`sync.RWMutex` vs `sync.Mutex` pour le store en mémoire), mais le design fonctionnel (Fan-out/Fan-in) et la logique d'arrêt gracieux proviennent d'une réflexion architecturale délibérée de ma part.
